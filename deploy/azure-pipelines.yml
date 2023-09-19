@@ -61,7 +61,7 @@ stages:
               - task: AzureCLI@2
                 displayName: 'Deploy Ghost to AKS Cluster'
                 inputs:
-                  azureSubscription: 'free-trial'
+                  azureSubscription: 'drs-svc'
                   scriptType: bash
                   scriptLocation: inlineScript
                   addSpnToEnvironment: true
