@@ -15,7 +15,7 @@ stages:
         displayName: "Terraform Deploy"
         steps:
           # Install the latest version of Terraform
-          - task: TerraformInstaller@1
+          - task: TerraformTaskV4@0
             displayName: "Install Latest Terraform Version"
             inputs:
               terraformVersion: 'latest'
