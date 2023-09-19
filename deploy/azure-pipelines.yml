@@ -1,0 +1,81 @@
+name: $(BuildDefinitionName)_$(Date:yyyyMMdd)_$(SourceBranchName)_$(Rev:rr)
+trigger:
+  batch: "true"
+  branches:
+    include:
+      - main
+      - develop
+
+pool:
+   vmImage: "ubuntu-20.04"
+stages:
+  - stage:
+    jobs:      
+      - job: Terraform_Deploy
+        displayName: "Terraform Deploy"
+        steps:
+          # Install the latest version of Terraform
+          - task: TerraformInstaller@1
+            displayName: "Install Latest Terraform Version"
+            inputs:
+              terraformVersion: 'latest'
+
+          # Initialize Terraform for the specified provider and configure the backend
+          - task: TerraformTaskV4@4
+            displayName: "Terraform Init"
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/infra/'
+              backendServiceArm: 'drs-svc'
+              backendAzureRmResourceGroupName: 'drs-container-rg'
+              backendAzureRmStorageAccountName: 'drsghosttfstate'
+              backendAzureRmContainerName: 'tfstate'
+              backendAzureRmKey: 'terraform.tfstate'
+              
+          # Create a Terraform plan and store it as "drs_infra_tfplan"
+          - task: TerraformTaskV4@4
+            displayName: "Terraform Plan"
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/infra/'
+              commandOptions: '-out drs_infra_tfplan'
+              environmentServiceNameAzureRM: 'drs-svc'
+
+          # Apply the Terraform plan with auto-approval
+          - task: TerraformTaskV4@4
+            displayName: "Terraform Apply"
+            inputs:
+              provider: 'azurerm'
+              command: 'apply'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/infra/'
+              commandOptions: '-auto-approve -input=false infra_tfplan'
+              environmentServiceNameAzureRM: 'drs-svc'
+
+
+      # Deploy ghost application to AKS cluster
+      - job: aks_deploy
+        dependsOn: Terraform_Deploy
+        steps:              
+              - task: AzureCLI@2
+                displayName: 'Deploy Ghost to AKS Cluster'
+                inputs:
+                  azureSubscription: 'free-trial'
+                  scriptType: bash
+                  scriptLocation: inlineScript
+                  addSpnToEnvironment: true
+                  inlineScript: |
+                    #!/usr/bin/env bash
+                    set -x
+
+                    AKS_RG="drs-aks-rg"
+                    AKS_NAME="drs-ghost-prod"
+
+                    # Get AKS Credentials
+                    az aks get-credentials -g $AKS_RG -n $AKS_NAME --admin
+
+                    # Create a Kubernetes namespace for the application
+                    kubectl create namespace ghost
+
+                    kubectl create -f https://raw.githubusercontent.com/saiyidi/ghost-drs/main/deploy/deploy_all.yml --namespace=ghost
