@@ -31,25 +31,6 @@ resource "azurerm_subnet_network_security_group_association" "default" {
   network_security_group_id = azurerm_network_security_group.default.id
 }
 
-# resource "azurerm_route_table" "default" {
-#   name                = "${azurerm_resource_group.this.name}-udr"
-#   location            = azurerm_resource_group.this.location
-#   resource_group_name = azurerm_resource_group.this.name
-#   tags                = var.tags
-
-#   #   route {
-#   #     name                   = "${var.environment}-subnet-to-firewall"
-#   #     address_prefix         = "0.0.0.0/0"
-#   #     next_hop_type          = "VirtualAppliance"
-#   #     next_hop_in_ip_address = var.route_table_next_hop_ip
-#   #   }
-# }
-
-# resource "azurerm_subnet_route_table_association" "default" {
-#   subnet_id      = azurerm_subnet.default.id
-#   route_table_id = azurerm_route_table.default.id
-# }
-
 resource "azurerm_key_vault" "default" {
   name                        = "hub-${var.location}-kv"
   location                    = azurerm_resource_group.this.location
@@ -61,16 +42,7 @@ resource "azurerm_key_vault" "default" {
   sku_name                    = "standard"
   enabled_for_deployment      = true
   tags                        = var.tags
-
-  # access_policy {
-  #   tenant_id      = data.azurerm_client_config.current.tenant_id
-  #   object_id      = data.azuread_service_principal.spn.object_id
-  #   application_id = data.azuread_service_principal.spn.application_id
-
-  #   secret_permissions = [
-  #     "Get", "List", "Set",
-  #   ]
-  # }
+  
 }
 
 resource "azurerm_storage_account" "default" {
@@ -96,7 +68,7 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic" {
   target_resource_id         = azurerm_key_vault.default.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.default.id
 
-  log {
+  enabled_log {
     category = "AuditEvent"
     enabled  = true
 
@@ -106,7 +78,7 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic" {
     }
   }
 
-  log {
+  enabled_log {
     category = "AzurePolicyEvaluationDetails"
     enabled  = false
 
