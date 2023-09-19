@@ -13,12 +13,10 @@ stages:
     jobs:      
       - job: Terraform_Deploy
         displayName: "Terraform Deploy"
-        steps:
-          # Install the latest version of Terraform
-          - task: TerraformTaskV4@0
-            displayName: "Install Latest Terraform Version"
-            inputs:
-              terraformVersion: 'latest'
+        steps:        
+          #- task: TerraformTaskV4@0
+          #  displayName: "Install Latest Terraform Version"
+          ##   terraformVersion: 'latest'
 
           # Initialize Terraform for the specified provider and configure the backend
           - task: TerraformTaskV4@4
