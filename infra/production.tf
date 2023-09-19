@@ -8,6 +8,10 @@ module "west-eu-spoke-prd-01" {
   hub_rg_name            = module.west-eu-hub-01.rg_name
   hub_vnet_name          = module.west-eu-hub-01.vnet_name
   hub_vnet_id            = module.west-eu-hub-01.vnet_id
+  tags = {
+    "Env"    = "Prod"
+    "Application" = "Ghost"
+  }
   
   depends_on = [
     module.west-eu-hub-01
@@ -20,7 +24,11 @@ module "ghost-aks-prd-01" {
   location        = module.west-eu-spoke-prd-01.rg_location
   appgw_subnet_id = module.west-eu-spoke-prd-01.appgw_subnet_id
   la_workspace_id = module.west-eu-hub-01.la_workspace_id
-  environment     = "prod"  
+  environment     = "prod"
+  tags = {
+    "Env"    = "Prod"
+    "Application" = "Ghost"
+  }  
   depends_on = [
     module.west-eu-spoke-prd-01
   ]
