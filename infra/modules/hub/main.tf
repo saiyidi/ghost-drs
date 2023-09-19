@@ -69,21 +69,17 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic" {
   log_analytics_workspace_id = azurerm_log_analytics_workspace.default.id
 
   enabled_log {
-    category = "AuditEvent"
-    enabled  = true
+    category = "AuditEvent"    
 
     retention_policy {
-      enabled = false
-      days    = 0
+      enabled = false      
     }
   }
 
   enabled_log {
-    category = "AzurePolicyEvaluationDetails"
-    enabled  = false
+    category = "AzurePolicyEvaluationDetails"    
 
-    retention_policy {
-      days    = 0
+    retention_policy {      
       enabled = false
     }
   }
