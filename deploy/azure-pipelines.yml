@@ -48,7 +48,7 @@ stages:
               provider: 'azurerm'
               command: 'apply'
               workingDirectory: '$(System.DefaultWorkingDirectory)/infra/'
-              commandOptions: '-auto-approve -input=false infra_tfplan'
+              commandOptions: '-auto-approve -input=false drs_infra_tfplan'
               environmentServiceNameAzureRM: 'drs-svc'
 
 
