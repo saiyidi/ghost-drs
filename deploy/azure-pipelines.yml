@@ -68,7 +68,7 @@ stages:
                     set -x
 
                     AKS_RG="drs-ghost-spoke-rg01"
-                    AKS_NAME="drs-ghost-prod"
+                    AKS_NAME="ghost-aks-prod"
 
                     # Get AKS Credentials
                     az aks get-credentials -g $AKS_RG -n $AKS_NAME --admin
