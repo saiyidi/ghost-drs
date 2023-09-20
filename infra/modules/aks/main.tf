@@ -9,7 +9,7 @@ resource "azurerm_kubernetes_cluster" "ghost" {
   default_node_pool {
     name       = "ghostdf"
     node_count = 1
-    vm_size    = "standard_d2as_v5"
+    vm_size    = "Standard_DS2_v2"
   }
 
   identity {
