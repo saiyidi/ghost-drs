@@ -32,7 +32,7 @@ resource "azurerm_subnet_network_security_group_association" "default" {
 }
 
 resource "azurerm_key_vault" "default" {
-  name                        = "hub-${var.location}-kv"
+  name                        = "hub-drs-kv"
   location                    = azurerm_resource_group.this.location
   resource_group_name         = azurerm_resource_group.this.name
   enabled_for_disk_encryption = false
@@ -46,7 +46,7 @@ resource "azurerm_key_vault" "default" {
 }
 
 resource "azurerm_storage_account" "default" {
-  name                     = "hubdefaultsa"
+  name                     = "hubdrssa"
   resource_group_name      = azurerm_resource_group.this.name
   location                 = azurerm_resource_group.this.location
   account_tier             = "Standard"
@@ -55,11 +55,11 @@ resource "azurerm_storage_account" "default" {
 }
 
 resource "azurerm_log_analytics_workspace" "default" {
-  name                = "hub-${var.location}-la"
+  name                = "hub-drs-la"
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
   sku                 = "PerGB2018"
-  retention_in_days   = 91
+  retention_in_days   = 90
   tags                = var.tags
 }
 
