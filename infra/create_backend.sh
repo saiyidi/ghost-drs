@@ -14,3 +14,6 @@ ACCOUNT_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP_NAME
 
 # Create blob container
 az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME --account-key $ACCOUNT_KEY
+
+# Create ACR
+az acr create --resource-group $RESOURCE_GROUP_NAME --name drsregistry --sku Basic --admin-enabled true

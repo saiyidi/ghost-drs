@@ -18,7 +18,7 @@ stages:
           #  displayName: "Install Latest Terraform Version"
           ##   terraformVersion: 'latest'
 
-          # Initialize Terraform for the specified provider and configure the backend
+          # Initialize Terraform and configure the backend
           - task: TerraformTaskV4@4
             displayName: "Terraform Init"
             inputs:
@@ -63,13 +63,16 @@ stages:
                   scriptType: bash
                   scriptLocation: inlineScript
                   addSpnToEnvironment: true
-                  inlineScript: |
-                    #!/usr/bin/env bash
+                  
+              - bash: |                   
                     set -x
-
                     AKS_RG="drs-ghost-spoke-rg01"
                     AKS_NAME="ghost-aks-prod"
+                    ACR_NAME="drsregistry"
+                    RG_LOCATION="westeurope"
 
+                    # Push image to ACR
+                    az acr build --image drs-ghost:v1.5 --registry drsregistry --file ../Dockerfile .
                     # Get AKS Credentials
                     az aks get-credentials -g $AKS_RG -n $AKS_NAME --admin
 

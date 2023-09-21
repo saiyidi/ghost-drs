@@ -46,7 +46,7 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: ghost-app
-        image: ghost:5.62.0-alpine
+        image: drs-ghost:v1.5
         resources:
           requests:
             cpu: 250m
