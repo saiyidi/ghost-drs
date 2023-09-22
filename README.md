@@ -31,3 +31,5 @@ We use Terraform for provisioning of our infrastructure.
 CICD-
 Our code is in GitHub and we use Azure DevOps to automatically build and release our code.
 
+Cleanup posts(to be done) -
+To delete all posts together , we can setup a function app which will trigger a python or JS script invoking a call to the ghost API or using the ghost cli. 
